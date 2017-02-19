@@ -9,7 +9,8 @@ import android.provider.BaseColumns;
 public class DBContract {
     // To prevent someone from accidentally instantiating the contract class,
     // make the constructor private.
-    private DBContract() {}
+    private DBContract() {
+    }
 
     /* Inner class that defines the table contents */
     public static class PrimaryRelation implements BaseColumns {

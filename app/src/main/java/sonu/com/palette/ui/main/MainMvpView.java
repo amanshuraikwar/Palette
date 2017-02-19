@@ -6,7 +6,10 @@ package sonu.com.palette.ui.main;
 
 public interface MainMvpView {
     public void hideToolbar();
+
     public void showToolbar();
+
     public void hideFab();
+
     public void showFab();
 }

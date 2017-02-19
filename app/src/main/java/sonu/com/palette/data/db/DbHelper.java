@@ -7,10 +7,11 @@ import sonu.com.palette.data.db.model.Palette;
  */
 
 public interface DbHelper {
-    public void addPalette(long timestamp,
+    public long addPalette(long timestamp,
                            String labels[],
                            String hexs[],
                            String label,
                            boolean marked) throws Exception;
+
     public Palette[] getPalettes();
 }

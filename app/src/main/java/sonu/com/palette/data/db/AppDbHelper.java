@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 import java.util.Arrays;
 
 import sonu.com.palette.data.db.contract.DBContract;
@@ -15,7 +16,7 @@ import sonu.com.palette.data.db.model.Palette;
  * Created by sonu on 1/13/2017.
  */
 
-public class AppDbHelper extends SQLiteOpenHelper implements DbHelper{
+public class AppDbHelper extends SQLiteOpenHelper implements DbHelper {
     private static final String TAG = AppDbHelper.class.getSimpleName();
 
     // If you change the database schema, you must increment the database version.
@@ -40,40 +41,42 @@ public class AppDbHelper extends SQLiteOpenHelper implements DbHelper{
     }
 
     @Override
-    public void addPalette(long timestamp,
+    public long addPalette(long timestamp,
                            String labels[],
                            String hexs[],
                            String label,
-                           boolean marked) throws Exception{
-        Log.i(TAG,"addPalette:labels="+ Arrays.toString(labels)+",hexs="+ Arrays.toString(hexs));
+                           boolean marked) throws Exception {
+        Log.i(TAG, "addPalette:labels=" + Arrays.toString(labels) + ",hexs=" + Arrays.toString(hexs));
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_TIMESTAMP,timestamp);
-        contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_LABEL,label);
+        contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_TIMESTAMP, timestamp);
+        contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_LABEL, label);
         if (marked) {
-            contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_MARKED,1);
+            contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_MARKED, 1);
         } else {
-            contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_MARKED,0);
+            contentValues.put(DBContract.PrimaryRelation.COLUMN_NAME_MARKED, 0);
         }
         long newRowId_1 = db.insert(DBContract.PrimaryRelation.TABLE_NAME, null, contentValues);
 
-        if(labels.length != hexs.length) {
+        if (labels.length != hexs.length) {
             throw new Exception("Labels Array and Hexs Array should be of same length");
         }
 
         int noOfColors = labels.length;
-        for(int i = 0;i < noOfColors;i++) {
+        for (int i = 0; i < noOfColors; i++) {
             contentValues = new ContentValues();
-            contentValues.put(DBContract.PaletteRelation.COLUMN_NAME_PRIMARY_ID,newRowId_1);
-            contentValues.put(DBContract.PaletteRelation.COLUMN_NAME_COLOR_LABEL,labels[i]);
-            contentValues.put(DBContract.PaletteRelation.COLUMN_NAME_COLOR_HEX,hexs[i]);
+            contentValues.put(DBContract.PaletteRelation.COLUMN_NAME_PRIMARY_ID, newRowId_1);
+            contentValues.put(DBContract.PaletteRelation.COLUMN_NAME_COLOR_LABEL, labels[i]);
+            contentValues.put(DBContract.PaletteRelation.COLUMN_NAME_COLOR_HEX, hexs[i]);
             long newRowId_2 = db.insert(DBContract.PaletteRelation.TABLE_NAME, null, contentValues);
         }
+
+        return newRowId_1;
     }
 
     @Override
-    public Palette[] getPalettes(){
+    public Palette[] getPalettes() {
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
@@ -86,7 +89,7 @@ public class AppDbHelper extends SQLiteOpenHelper implements DbHelper{
         };
 
         // How you want the results sorted in the resulting Cursor
-        String sortOrder = DBContract.PrimaryRelation._ID+ " DESC";
+        String sortOrder = DBContract.PrimaryRelation._ID + " DESC";
 
         Cursor cursor_1 = db.query(
                 DBContract.PrimaryRelation.TABLE_NAME,      // The table to query
@@ -100,7 +103,7 @@ public class AppDbHelper extends SQLiteOpenHelper implements DbHelper{
 
         Palette palettes[] = new Palette[cursor_1.getCount()];
 
-        while(cursor_1.moveToNext()) {
+        while (cursor_1.moveToNext()) {
             long itemId = cursor_1.getLong(cursor_1.getColumnIndexOrThrow(
                     DBContract.PrimaryRelation._ID));
 
@@ -113,7 +116,7 @@ public class AppDbHelper extends SQLiteOpenHelper implements DbHelper{
 
             // Filter results WHERE "title" = 'My Title'
             String selection = DBContract.PaletteRelation.COLUMN_NAME_PRIMARY_ID + " = ?";
-            String[] selectionArgs = { itemId+"" };
+            String[] selectionArgs = {itemId + ""};
 
             Cursor cursor_2 = db.query(
                     DBContract.PaletteRelation.TABLE_NAME,                     // The table to query
@@ -151,7 +154,7 @@ public class AppDbHelper extends SQLiteOpenHelper implements DbHelper{
                     cursor_1.getColumnIndexOrThrow(
                             DBContract.PrimaryRelation.COLUMN_NAME_MARKED)) != 0;
 
-            Palette palette = new Palette(itemId,timestamp,colorLabels,colorHexs,label,marked);
+            Palette palette = new Palette(itemId, timestamp, colorLabels, colorHexs, label, marked);
             palettes[cursor_1.getPosition()] = palette;
         }
 

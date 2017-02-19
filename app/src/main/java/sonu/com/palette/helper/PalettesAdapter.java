@@ -23,12 +23,12 @@ import sonu.com.palette.data.db.model.Palette;
  * Created by sonu on 1/13/2017.
  */
 
-public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyViewHolder>{
+public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyViewHolder> {
 
     private Palette mPalettes[];
     private Context mContext;
 
-    public PalettesAdapter(Context context, Palette palettes[]){
+    public PalettesAdapter(Context context, Palette palettes[]) {
         mContext = context;
         mPalettes = palettes;
     }
@@ -39,16 +39,18 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
                 .inflate(R.layout.item_palettes, parent, false));
     }
 
-    private class MarkedImageViewOnClickListener implements View.OnClickListener{
+    private class MarkedImageViewOnClickListener implements View.OnClickListener {
         private int mPosition;
         private boolean mMarked;
+
         MarkedImageViewOnClickListener(int position, boolean marked) {
             mPosition = position;
             mMarked = marked;
         }
+
         @Override
         public void onClick(View v) {
-            if(mMarked) {
+            if (mMarked) {
                 ((ImageView) v)
                         .setImageDrawable(mContext.getDrawable(R.drawable.ic_bookmark_border_24dp));
             } else {
@@ -63,13 +65,13 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         Palette palette = mPalettes[position];
-        holder.snoTextView.setText((position+1)+"");
+        holder.snoTextView.setText((position + 1) + "");
 
         Date date = new Date(palette.timestamp);
-        holder.timestampTextView.setText(DateFormat.getDateInstance().format(date)+"");
+        holder.timestampTextView.setText(DateFormat.getDateInstance().format(date) + "");
 
         holder.labelEditText.setText(palette.label);
-        if(palette.marked) {
+        if (palette.marked) {
             holder.markedImageView.setImageDrawable(mContext.getDrawable(R.drawable.ic_bookmark_solid_24dp));
         } else {
             holder.markedImageView.setImageDrawable(mContext.getDrawable(R.drawable.ic_bookmark_border_24dp));
@@ -84,24 +86,24 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
 
         holder.paletteHolder.removeAllViews();
 
-        for (int i = 0;i < colorLabels.length; i++){
+        for (int i = 0; i < colorLabels.length; i++) {
             View paletteElement = LayoutInflater.from(mContext)
                     .inflate(R.layout.item_palette_element, null, false);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0,(int)(4*density),0,(int)(4*density));
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, (int) (4 * density), 0, (int) (4 * density));
             paletteElement.setLayoutParams(layoutParams);
 
             View colorView = paletteElement.findViewById(R.id.colorView);
             TextView colorHex = (TextView) paletteElement.findViewById(R.id.colorHex);
             TextView colorLabel = (TextView) paletteElement.findViewById(R.id.colorLabel);
 
-            ((GradientDrawable)colorView.getBackground()).setColor(Color.parseColor(colorHexs[i]));
+            ((GradientDrawable) colorView.getBackground()).setColor(Color.parseColor(colorHexs[i]));
 
-            if(isColorDark(Color.parseColor(colorHexs[i]))) {
-                ((GradientDrawable)colorView.getBackground()).setStroke((int)(1*mContext.getResources().getDisplayMetrics().density),lighten(Color.parseColor(colorHexs[i]),0.2));
+            if (isColorDark(Color.parseColor(colorHexs[i]))) {
+                ((GradientDrawable) colorView.getBackground()).setStroke((int) (1 * mContext.getResources().getDisplayMetrics().density), lighten(Color.parseColor(colorHexs[i]), 0.2));
             } else {
-                ((GradientDrawable)colorView.getBackground()).setStroke((int)(1*mContext.getResources().getDisplayMetrics().density),darken(Color.parseColor(colorHexs[i]),0.2));
+                ((GradientDrawable) colorView.getBackground()).setStroke((int) (1 * mContext.getResources().getDisplayMetrics().density), darken(Color.parseColor(colorHexs[i]), 0.2));
             }
 
             colorHex.setText(colorHexs[i]);
@@ -109,11 +111,11 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
 
             holder.paletteHolder.addView(paletteElement);
 
-            if(i != (colorLabels.length-1)) {
+            if (i != (colorLabels.length - 1)) {
                 View divider = new View(mContext);
                 layoutParams = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,(int)(1*density));
-                layoutParams.setMargins((int)((16+36+12)*density),0,(int)(0*density),0);
+                        LinearLayout.LayoutParams.MATCH_PARENT, (int) (1 * density));
+                layoutParams.setMargins((int) ((16 + 36 + 12) * density), 0, (int) (0 * density), 0);
                 divider.setLayoutParams(layoutParams);
                 divider.setBackgroundColor(Color.parseColor("#eeeeee"));
                 holder.paletteHolder.addView(divider);
@@ -121,11 +123,11 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
         }
     }
 
-    public boolean isColorDark(int color){
-        double darkness = 1-(0.299*Color.red(color) + 0.587*Color.green(color) + 0.114*Color.blue(color))/255;
-        if(darkness<0.5){
+    public boolean isColorDark(int color) {
+        double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
+        if (darkness < 0.5) {
             return false; // It's a light color
-        }else{
+        } else {
             return true; // It's a dark color
         }
     }
@@ -154,7 +156,7 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
     }
 
     private static int darkenColor(int color, double fraction) {
-        return (int)Math.max(color - (color * fraction), 0);
+        return (int) Math.max(color - (color * fraction), 0);
     }
 
     private static int lightenColor(int color, double fraction) {
@@ -166,8 +168,8 @@ public class PalettesAdapter extends RecyclerView.Adapter<PalettesAdapter.MyView
         return mPalettes.length;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-        public TextView snoTextView,timestampTextView;
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView snoTextView, timestampTextView;
         public LinearLayout paletteHolder;
         public EditText labelEditText;
         public ImageView markedImageView;

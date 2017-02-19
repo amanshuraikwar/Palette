@@ -13,13 +13,14 @@ import android.view.ViewGroup;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import sonu.com.palette.R;
+import sonu.com.palette.data.db.model.Palette;
 import sonu.com.palette.helper.HidingScrollListener;
 import sonu.com.palette.helper.PalettesAdapter;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainFragment extends Fragment implements MainMvpFragmentView{
+public class MainFragment extends Fragment implements MainMvpFragmentView {
 
     @BindView(R.id.palettesRecyclerView)
     RecyclerView palettesRecyclerView;
@@ -39,7 +40,7 @@ public class MainFragment extends Fragment implements MainMvpFragmentView{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        ButterKnife.bind(this,v);
+        ButterKnife.bind(this, v);
         mContext = getActivity();
         mainMvpFragmentPresenter = new MainFragmentPresenter(mContext);
 
@@ -56,13 +57,18 @@ public class MainFragment extends Fragment implements MainMvpFragmentView{
         palettesRecyclerView.addOnScrollListener(new HidingScrollListener() {
             @Override
             public void onHide() {
-                ((MainMvpView)mContext).hideFab();
+                ((MainMvpView) mContext).hideFab();
             }
 
             @Override
             public void onShow() {
-                ((MainMvpView)mContext).showFab();
+                ((MainMvpView) mContext).showFab();
             }
         });
+    }
+
+    @Override
+    public void addPalette(Palette palette) {
+
     }
 }

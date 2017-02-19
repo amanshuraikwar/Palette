@@ -10,12 +10,12 @@ import sonu.com.palette.data.db.model.Palette;
  * Created by sonu on 5/2/17.
  */
 
-public class MainFragmentPresenter implements MainMvpFragmentPresenter{
+public class MainFragmentPresenter implements MainMvpFragmentPresenter {
 
     private Context mContext;
     private DataManager dataManager;
 
-    public MainFragmentPresenter(Context context){
+    public MainFragmentPresenter(Context context) {
         mContext = context;
         dataManager = AppDataManager.getInstance(context);
     }
